@@ -27,7 +27,38 @@ bool chmin(T &x, const T& y)
 
 class Solution {
 public:
-    vector<vector<string>> partition(string s) {
-        
+    bool isPalindrome(const string &s)
+    {
+        int left = 0, right = s.size() - 1;
+        while (left <= right)
+        {
+            if (s[left] != s[right])
+                return false;
+            ++left; --right;
+        }
+        return true;
     }
+    vector<vector<string>> partition(string s) {
+        vector<vector<string>> res;
+        vector<string> trace;
+        function<void(int)> backTracking = [&](int cur) -> void {
+            if (cur >= s.size())
+            {
+                res.push_back(trace);
+                return;
+            }
+            for (int i = cur; i < s.size(); ++i)
+            {
+                if (isPalindrome(s.substr(cur, i - cur + 1)))
+                {
+                    trace.push_back(s.substr(cur, i - cur + 1));
+                    backTracking(i + 1);
+                    trace.pop_back();
+                }
+            }
+        };
+        backTracking(0);
+        return res;
+    }
+    
 };
