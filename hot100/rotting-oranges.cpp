@@ -10,7 +10,6 @@ public:
 
     int orangesRotting(vector<vector<int>>& grid) {
         int m = grid.size(), n = grid[0].size();
-        vector<vector<bool>> visited(m, vector<bool>(n));
 
         queue<pair<int, int>> que;
         int time = -1;

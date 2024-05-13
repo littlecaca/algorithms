@@ -8,6 +8,7 @@
 #include <queue>
 #include <vector>
 #include <string>
+#include <map>
 
 using namespace std;
 
@@ -29,22 +30,18 @@ bool chmin(T &x, const T& y)
 
 class Solution {
 public:
-    void sortColors(vector<int>& nums) {
-        int left = 0, right = 0;
-        while (right < nums.size())
+    bool satisfiesConditions(vector<vector<int>>& grid) {
+        int m = grid.size(), n = grid[0].size();
+        for (int i = 0; i < m; ++i)
         {
-            if (nums[right] == 0)
-                swap(nums[right], nums[left++]);
-            ++right;
+            for (int j = 0; j < n; ++j)
+            {
+                if (i < m - 1 && grid[i][j] != grid[i + 1][j])
+                    return false;
+                if (j < n - 1 && grid[i][j] == grid[i][j + 1])
+                    return false;
+            }
         }
-        right = left;
-        while (right < nums.size())
-        {
-            if (nums[right] == 1)
-                swap(nums[right], nums[left++]);
-            ++right;
-        }   
-
-    
+        return true;
     }
 };

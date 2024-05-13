@@ -1,3 +1,5 @@
+#include <array>
+#include <unordered_set>
 #include <bitset>
 #include <numeric>
 #include <unordered_map>
@@ -8,6 +10,7 @@
 #include <queue>
 #include <vector>
 #include <string>
+#include <map>
 
 using namespace std;
 
@@ -29,22 +32,21 @@ bool chmin(T &x, const T& y)
 
 class Solution {
 public:
-    void sortColors(vector<int>& nums) {
-        int left = 0, right = 0;
-        while (right < nums.size())
-        {
-            if (nums[right] == 0)
-                swap(nums[right], nums[left++]);
-            ++right;
-        }
-        right = left;
-        while (right < nums.size())
-        {
-            if (nums[right] == 1)
-                swap(nums[right], nums[left++]);
-            ++right;
-        }   
+    int maximumCostSubstring(string s, string chars, vector<int>& vals) {
+        int ans = 0;
+        vector<int> record(27, INT_MIN);
+        for (int i = 0; i < chars.size(); ++i)
+            record[chars[i] - 'a' + 1] = vals[i];
 
-    
+        int cur = 0;
+        for (auto c : s)
+        {
+            int index = c - 'a' + 1;
+            cur += record[index] == INT_MIN ? index : record[index];
+            ans = max(ans, cur);
+            if (cur < 0)
+                cur = 0;
+        }
+        return ans;
     }
 };

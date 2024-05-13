@@ -1,3 +1,4 @@
+#include <unordered_set>
 #include <bitset>
 #include <numeric>
 #include <unordered_map>
@@ -8,6 +9,7 @@
 #include <queue>
 #include <vector>
 #include <string>
+#include <map>
 
 using namespace std;
 
@@ -29,22 +31,13 @@ bool chmin(T &x, const T& y)
 
 class Solution {
 public:
-    void sortColors(vector<int>& nums) {
-        int left = 0, right = 0;
-        while (right < nums.size())
-        {
-            if (nums[right] == 0)
-                swap(nums[right], nums[left++]);
-            ++right;
-        }
-        right = left;
-        while (right < nums.size())
-        {
-            if (nums[right] == 1)
-                swap(nums[right], nums[left++]);
-            ++right;
-        }   
+    int minDays(int n) {
+        static unordered_map<int, int> memory;
 
-    
+        if (n == 1)
+            return n;
+        if (memory.count(n))
+            return memory[n];
+        return memory[n] = min(n % 2 + 1 + minDays(n / 2), n % 3 + 1 + minDays(n / 3));
     }
 };

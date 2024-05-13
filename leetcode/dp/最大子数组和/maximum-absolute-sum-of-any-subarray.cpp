@@ -1,3 +1,5 @@
+#include <array>
+#include <unordered_set>
 #include <bitset>
 #include <numeric>
 #include <unordered_map>
@@ -8,6 +10,7 @@
 #include <queue>
 #include <vector>
 #include <string>
+#include <map>
 
 using namespace std;
 
@@ -29,22 +32,19 @@ bool chmin(T &x, const T& y)
 
 class Solution {
 public:
-    void sortColors(vector<int>& nums) {
-        int left = 0, right = 0;
-        while (right < nums.size())
-        {
-            if (nums[right] == 0)
-                swap(nums[right], nums[left++]);
-            ++right;
-        }
-        right = left;
-        while (right < nums.size())
-        {
-            if (nums[right] == 1)
-                swap(nums[right], nums[left++]);
-            ++right;
-        }   
+    int maxAbsoluteSum(vector<int>& nums) {
+        int posi = 0, nega = 0;
+        int ans = 0;
 
-    
+        for (auto n : nums)
+        {
+            posi += n;
+            nega += n;
+            ans = max({ans, abs(posi), abs(nega)});
+            if (posi < 0) posi = 0;
+            if (nega > 0) nega = 0;
+        }
+        return ans;
+
     }
 };

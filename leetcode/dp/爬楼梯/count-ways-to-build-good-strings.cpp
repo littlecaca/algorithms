@@ -29,22 +29,20 @@ bool chmin(T &x, const T& y)
 
 class Solution {
 public:
-    void sortColors(vector<int>& nums) {
-        int left = 0, right = 0;
-        while (right < nums.size())
+    int countGoodStrings(int low, int high, int zero, int one) {
+        #define MOD ((int)1e9 + 7)
+        vi dp(high + 1);
+        dp[0] = 1;
+        ll ans = 0;
+        for (int i = 1; i <= high; ++i)
         {
-            if (nums[right] == 0)
-                swap(nums[right], nums[left++]);
-            ++right;
+            if (i >= one)
+                dp[i] += dp[i - one] % MOD;
+            if (i >= zero)
+                dp[i] += dp[i - zero] % MOD;
+            if (i >= low)
+                ans = (ans + dp[i] % MOD) % MOD;
         }
-        right = left;
-        while (right < nums.size())
-        {
-            if (nums[right] == 1)
-                swap(nums[right], nums[left++]);
-            ++right;
-        }   
-
-    
+        return ans;
     }
 };

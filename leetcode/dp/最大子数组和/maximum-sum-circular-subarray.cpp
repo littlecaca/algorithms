@@ -1,3 +1,5 @@
+#include <array>
+#include <unordered_set>
 #include <bitset>
 #include <numeric>
 #include <unordered_map>
@@ -8,6 +10,7 @@
 #include <queue>
 #include <vector>
 #include <string>
+#include <map>
 
 using namespace std;
 
@@ -29,22 +32,20 @@ bool chmin(T &x, const T& y)
 
 class Solution {
 public:
-    void sortColors(vector<int>& nums) {
-        int left = 0, right = 0;
-        while (right < nums.size())
+    int maxSubarraySumCircular(vector<int>& nums) {
+        int mna = nums[0], mxa = nums[0];
+        int mn = 0, mx = 0;
+        int sum = 0;
+        for (auto n : nums)
         {
-            if (nums[right] == 0)
-                swap(nums[right], nums[left++]);
-            ++right;
+            sum += n;
+            mn += n;
+            mx += n;
+            mna = min(mna, mn);
+            mxa = max(mxa, mx);
+            if (mn > 0) mn = 0;
+            if (mx < 0) mx = 0;
         }
-        right = left;
-        while (right < nums.size())
-        {
-            if (nums[right] == 1)
-                swap(nums[right], nums[left++]);
-            ++right;
-        }   
-
-    
+        return mxa < 0 ? mxa : max(mxa, sum - mna);
     }
 };
