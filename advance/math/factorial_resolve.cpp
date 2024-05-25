@@ -8,7 +8,6 @@ void resolve(vector<int> &primes, vector<int> &count, int n)
 {
     // 首先算2-n中出现的质数，O(n)
     vector<int> v(n + 1);   // v[i]记录i的最小质因数，目的是为了避免重复，达到线性
-    vector<int> primes;
 
     for (int i = 2; i <= n; ++i)
     {
