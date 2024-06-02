@@ -37,7 +37,7 @@ ll inverse(ll b, ll p)
     b = b % p;
     ll ans = 1;
     ll exp = p - 2;
-    while (exp > 0)
+    while (exp)
     {
         if (exp & 1) ans = multiply(ans, b, p) % p;
         b = multiply(b, b, p) % p;

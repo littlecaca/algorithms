@@ -55,7 +55,7 @@ void init()
 {
     REP(i, 1, N)
         C[i] = i;
-
+    
     REP(i, 1, N)
     {
         auto father = i + (-i & i);

@@ -1,76 +1,100 @@
+//Author:XuHt
+#include <cmath>
+#include <cstdio>
 #include <vector>
+#include <iostream>
 #include <algorithm>
-
+#define ll long long
 using namespace std;
- 
-const int maxn = 1000 + 10, maxe = 1000 * 1000 / 2 + 5, INF = 0x3f3f3f3f;
-int n, m, pre[maxn], head[maxn], Max[maxn][maxn];
-struct Edge {
-    int u, v, w;
-    bool vis;
-}edge[maxe];
-vector<int> G[maxn];
- 
-bool cmp(const Edge &a, const Edge &b) {
-    return a.w < b.w;
+const int N = 100006, M = 300006;
+int n, m, t, fa[N], d[N], f[N][20];
+struct P {
+	int x, y;
+	int z;
+	bool k;
+	bool operator < (const P &w) const {
+		return z < w.z;
+	}
+} p[M];
+int g[N][20];
+ll sum, ans = LLONG_MAX;
+vector<pair<int, int>> e[N];
+
+int get(int x) {
+	if (x == fa[x]) return x;
+	return fa[x] = get(fa[x]);
 }
- 
-void Init() {
-    for(int i = 1; i <= n; i ++) {
-        G[i].clear();
-        G[i].push_back(i);
-        head[i] = i;
-    }
+
+void kruskal() {
+	sort(p + 1, p + m + 1);
+	for (int i = 1; i <= n; i++) fa[i] = i;
+	for (int i = 1; i <= m; i++) {
+		int x = get(p[i].x), y = get(p[i].y);
+		if (x == y) continue;
+		fa[x] = y;
+		sum += p[i].z;
+		p[i].k = 1;
+	}
 }
- 
-int Find(int x) {
-    if(head[x] == x) return x;
-    return head[x] = Find(head[x]);
+
+void dfs(int x) {
+	for (unsigned int i = 0; i < e[x].size(); i++) {
+		int y = e[x][i].first;
+		if (d[y]) continue;
+		d[y] = d[x] + 1;
+		f[y][0] = x;
+		int z = e[x][i].second;
+		g[y][0] = z;
+		for (int j = 1; j <= t; j++) {
+			f[y][j] = f[f[y][j-1]][j-1];
+			g[y][j] = max(g[y][j-1], g[f[y][j-1]][j-1]);
+		}
+		dfs(y);
+	}
 }
- 
-int Kruskal() {
-    sort(edge + 1, edge + 1 + m, cmp);
-    Init();
-    int ans = 0, cnt = 0;
-    for(int i = 1; i <= m; i ++) {
-        if(cnt == n - 1) break;
-        int fx = Find(edge[i].u), fy = Find(edge[i].v);
-        if(fx != fy) {
-            cnt ++;
-            edge[i].vis = true;
-            ans += edge[i].w;
-            int len_fx = G[fx].size(), len_fy = G[fy].size();
-            for(int j = 0; j < len_fx; j ++)
-                for(int k = 0; k < len_fy; k ++)
-                    Max[G[fx][j]][G[fy][k]] = Max[G[fy][k]][G[fx][j]] = edge[i].w;
-            head[fx] = fy;
-            for(int j = 0; j < len_fx; j ++)
-                G[fy].push_back(G[fx][j]);
-        }
-    }
-    return ans;
+
+inline void lca(int x, int y, int &val1, int &val2) {
+	if (d[x] > d[y]) swap(x, y);
+	for (int i = t; i >= 0; i--)
+		if (d[f[y][i]] >= d[x]) {
+			if (val1 < g[y][i]){
+				val1 = g[y][i];
+			}
+			y = f[y][i];
+		}
+	if (x == y) return;
+	for (int i = t; i >= 0; i--)
+		if (f[x][i] != f[y][i]) {
+			val1 = max(val1, max(g[x][i], g[y][i]));
+			x = f[x][i];
+			y = f[y][i];
+		}
+	val1 = max(val1, max(g[x][0], g[y][0]));
 }
- 
-int Second_Kruskal(int MST) {
-    int ans = INF;
-    for(int i = 1; i <= m; i ++)
-        if(!edge[i].vis)
-            ans = min(ans, MST + edge[i].w - Max[edge[i].u][edge[i].v]);
-    return ans;
-}
- 
+
 int main() {
-    int t;
-    scanf("%d", &t);
-    while(t --) {
-        scanf("%d %d", &n, &m);
-        for(int i = 1; i <= m; i ++) {
-            scanf("%d %d %d", &edge[i].u, &edge[i].v, &edge[i].w);
-            edge[i].vis = false;
-        }
-        int MST = Kruskal();
-        int Second_MST = Second_Kruskal(MST);
-        printf("%d\n", Second_MST );
-    }
-    return 0;
+	cin >> n >> m;
+	for (int i = 1; i <= m; i++) {
+		scanf("%d %d %d", &p[i].x, &p[i].y, &p[i].z);
+		p[i].k = 0;
+	}
+	kruskal();
+	for (int i = 1; i <= m; i++)
+		if (p[i].k) {
+			e[p[i].x].push_back(make_pair(p[i].y, p[i].z));
+			e[p[i].y].push_back(make_pair(p[i].x, p[i].z));
+		}
+	t = log(n) / log(2) + 1;
+	d[1] = 1;
+	// for (int i = 0; i <= t; i++) g[1][i] = -INF;
+	dfs(1);
+	for (int i = 1; i <= m; i++)
+		if (!p[i].k) {
+			int val1 = 0, val2 = 0;
+			lca(p[i].x, p[i].y, val1, val2);
+			ans = min(ans, sum - val1 + p[i].z);
+
+		}
+	cout << ans << endl;
+	return 0;
 }
