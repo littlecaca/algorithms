@@ -31,30 +31,27 @@ bool chmin(T &a, const T &b)
 
 class Solution {
 public:
-    bool isMatch(string s, string p) {
-        int m = s.size(), n = p.size();
-        
-        vector<vector<bool>> f(n + 1, vector<bool>(m + 1));
-        f[0][0] = true;
-        REP(i, 1, n)
+    int kIncreasing(vector<int>& arr, int k) {
+        // 二分 + 贪心
+        int ans = 0;
+        REP(i, 0, k - 1)
         {
-            char tar = p[i - 1];
-            if (tar == '*') f[i][0] = f[i - 2][0];
-            else f[i][0] = false;
-
-            REP(j, 1, m)
+            vi f;
+            int count = 0;
+            for (int j = i; j < arr.size(); j += k)
             {
-                if (tar == s[j - 1] || tar == '.')
-                    f[i][j] = f[i - 1][j - 1];
-                else if (tar == '*')
+                ++count;
+                int num = arr[j];
+                if (f.empty() || f.back() <= num)
+                    f.push_back(num);
+                else
                 {
-                    if (s[j - 1] != p[i - 2] && p[i - 2] != '.')
-                        f[i][j] = f[i - 2][j];
-                    else f[i][j] = f[i][j - 1] || f[i - 2][j];
+                    auto it = upper_bound(f.begin(), f.end(), num);
+                    *it = num;
                 }
-                else f[i][j] = false;
             }
+            ans += count - f.size();
         }
-        return f.back().back();
+        return ans;
     }
 };

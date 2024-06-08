@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
 
@@ -31,30 +32,30 @@ bool chmin(T &a, const T &b)
 
 class Solution {
 public:
-    bool isMatch(string s, string p) {
-        int m = s.size(), n = p.size();
-        
-        vector<vector<bool>> f(n + 1, vector<bool>(m + 1));
-        f[0][0] = true;
-        REP(i, 1, n)
+    int minDeletionSize(vector<string>& strs) {
+        int ans = 0;
+        vi dp(100);
+        int n = strs.size();
+        int m = strs[0].size();
+        REP(i, 0, m - 1)
         {
-            char tar = p[i - 1];
-            if (tar == '*') f[i][0] = f[i - 2][0];
-            else f[i][0] = false;
-
-            REP(j, 1, m)
+            int old = 0;
+            REP(j, 0, i - 1)
             {
-                if (tar == s[j - 1] || tar == '.')
-                    f[i][j] = f[i - 1][j - 1];
-                else if (tar == '*')
+                bool flag = true;
+                REP(k, 0, n - 1)
                 {
-                    if (s[j - 1] != p[i - 2] && p[i - 2] != '.')
-                        f[i][j] = f[i - 2][j];
-                    else f[i][j] = f[i][j - 1] || f[i - 2][j];
+                    if (strs[k][i] < strs[k][j])
+                    {
+                        flag = false;
+                        break;
+                    }
                 }
-                else f[i][j] = false;
+                if (flag) old = max(old, dp[j]);
             }
+            dp[i] = old + 1;
+            ans = max(ans, dp[i]);
         }
-        return f.back().back();
+        return m - ans;
     }
 };
