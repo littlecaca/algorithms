@@ -18,7 +18,13 @@ public:
             slow = slow->next;
             if (slow == fast)
             {
-                
+                ListNode *cur = head;
+                while (cur != fast)
+                {
+                    cur = cur->next;
+                    fast = fast->next;
+                }
+                return cur;
             }
         }
         return nullptr;
