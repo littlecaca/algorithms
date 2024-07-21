@@ -36,26 +36,29 @@ bool chmin(T &a, const T &b)
 }
 
 
+
 class Solution {
 public:
-    bool checkMove(vector<vector<char>>& board, int rMove, int cMove, char color) {
-        static vpii ways = {
-            {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
-        };
-        char tar = color == 'W' ? 'B' : 'W';
-        for (auto [x, y] : ways)
+    int maxIncreaseKeepingSkyline(vector<vector<int>>& grid) {
+        int n = grid.size();
+        vi row(n), col(n);
+        REP(i, 0, n - 1)
         {
-            int nx = rMove + x;
-            int ny = cMove + y;
-            int cnt = 0;
-            while (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[nx][ny] == tar)
+            REP(j, 0, n - 1)
             {
-                nx += x; ny += y;
-                ++cnt;
+                row[i] = max(row[i], grid[i][j]);
+                col[j] = max(col[j], grid[i][j]);
             }
-            if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[nx][ny] == color && cnt > 0)
-                return true;
         }
-        return false;
+        int ans = 0;
+        REP(i, 0, n - 1)
+        {
+            REP(j, 0, n - 1)
+            {
+                ans += min(row[i] - grid[i][j], col[j] - grid[i][j]);
+            }
+        }
+        return ans;
+
     }
 };

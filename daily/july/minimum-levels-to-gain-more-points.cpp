@@ -1,3 +1,4 @@
+#include <numeric>
 #include <unordered_set>
 #include <climits>
 #include <functional>
@@ -25,6 +26,7 @@ typedef vector<pll> vpll;
 #define _REP(i, a, b) for (int i = a; i >= b; --i)
 #define debug(num) cout << "debug: " << num << endl
 #define print(mess) cout << mess << endl
+#define INF 0x3f3f3f3f
 
 template <typename T>
 bool chmin(T &a, const T &b)
@@ -38,24 +40,18 @@ bool chmin(T &a, const T &b)
 
 class Solution {
 public:
-    bool checkMove(vector<vector<char>>& board, int rMove, int cMove, char color) {
-        static vpii ways = {
-            {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
-        };
-        char tar = color == 'W' ? 'B' : 'W';
-        for (auto [x, y] : ways)
+    int minimumLevels(vector<int>& possible) {
+        int n = possible.size();
+        int sum = 0;
+        int cur = 0;
+        sum = reduce(possible.begin(), possible.end(), 0) * 2 - n;
+
+        REP(j, 0, n - 2)
         {
-            int nx = rMove + x;
-            int ny = cMove + y;
-            int cnt = 0;
-            while (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[nx][ny] == tar)
-            {
-                nx += x; ny += y;
-                ++cnt;
-            }
-            if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[nx][ny] == color && cnt > 0)
-                return true;
+            cur += possible[j] ? 2 : -2;
+            if (sum < cur)
+                return j + 1;
         }
-        return false;
+        return -1;
     }
 };

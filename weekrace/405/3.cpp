@@ -38,24 +38,25 @@ bool chmin(T &a, const T &b)
 
 class Solution {
 public:
-    bool checkMove(vector<vector<char>>& board, int rMove, int cMove, char color) {
-        static vpii ways = {
-            {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
-        };
-        char tar = color == 'W' ? 'B' : 'W';
-        for (auto [x, y] : ways)
+    int numberOfSubmatrices(vector<vector<char>>& grid) {
+        int m = grid.size(), n = grid[0].size();
+        vvi record(n, vi(2));
+        int ans = 0;
+        REP(i, 0, m - 1)
         {
-            int nx = rMove + x;
-            int ny = cMove + y;
-            int cnt = 0;
-            while (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[nx][ny] == tar)
+            int xc = 0, yc = 0;
+            REP(j, 0, n - 1)
             {
-                nx += x; ny += y;
-                ++cnt;
+                if (grid[i][j] == 'X')
+                    ++record[j][0];
+                else if (grid[i][j] == 'Y')
+                    ++record[j][1];
+                xc += record[j][0];
+                yc += record[j][1];
+                if (xc == yc && xc > 0)
+                    ++ans;
             }
-            if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[nx][ny] == color && cnt > 0)
-                return true;
         }
-        return false;
+        return ans;
     }
 };

@@ -38,24 +38,29 @@ bool chmin(T &a, const T &b)
 
 class Solution {
 public:
-    bool checkMove(vector<vector<char>>& board, int rMove, int cMove, char color) {
-        static vpii ways = {
-            {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
-        };
-        char tar = color == 'W' ? 'B' : 'W';
-        for (auto [x, y] : ways)
-        {
-            int nx = rMove + x;
-            int ny = cMove + y;
-            int cnt = 0;
-            while (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[nx][ny] == tar)
+    vector<string> validStrings(int n) {
+        vector<string> res;
+        string trace(n, 0);
+        function<void(int)> dfs = [&](int i) -> void {
+            if (i == n)
             {
-                nx += x; ny += y;
-                ++cnt;
+                res.push_back(trace);
+                return;
             }
-            if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[nx][ny] == color && cnt > 0)
-                return true;
-        }
-        return false;
+            if (i > 0 && trace[i - 1] == '0')
+            {
+                trace[i] = '1';
+                dfs(i + 1);
+            }
+            else
+            {
+                trace[i] = '1';
+                dfs(i + 1);
+                trace[i] = '0';
+                dfs(i + 1);
+            }
+        };
+        dfs(0);
+        return res;
     }
 };

@@ -35,27 +35,15 @@ bool chmin(T &a, const T &b)
     return true;
 }
 
-
 class Solution {
 public:
-    bool checkMove(vector<vector<char>>& board, int rMove, int cMove, char color) {
-        static vpii ways = {
-            {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
-        };
-        char tar = color == 'W' ? 'B' : 'W';
-        for (auto [x, y] : ways)
+    string getEncryptedString(string s, int k) {
+        auto res = s;
+        int n = s.size();
+        REP(i, 0, n - 1)
         {
-            int nx = rMove + x;
-            int ny = cMove + y;
-            int cnt = 0;
-            while (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[nx][ny] == tar)
-            {
-                nx += x; ny += y;
-                ++cnt;
-            }
-            if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[nx][ny] == color && cnt > 0)
-                return true;
+            res[i] = s[(i + k) % n];
         }
-        return false;
+        return res;
     }
 };

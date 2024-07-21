@@ -35,27 +35,30 @@ bool chmin(T &a, const T &b)
     return true;
 }
 
-
 class Solution {
 public:
-    bool checkMove(vector<vector<char>>& board, int rMove, int cMove, char color) {
-        static vpii ways = {
-            {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
-        };
-        char tar = color == 'W' ? 'B' : 'W';
-        for (auto [x, y] : ways)
+    long long incremovableSubarrayCount(vector<int>& nums) {
+        int n = nums.size();
+        int left = INT_MAX, right = INT_MIN;
+        REP(i, 1, n - 1)
         {
-            int nx = rMove + x;
-            int ny = cMove + y;
-            int cnt = 0;
-            while (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[nx][ny] == tar)
+            if (nums[i] <= nums[i - 1])
             {
-                nx += x; ny += y;
-                ++cnt;
+                left = min(left, i);
+                right = max(right, i - 1);
             }
-            if (nx >= 0 && nx < 8 && ny >= 0 && ny < 8 && board[nx][ny] == color && cnt > 0)
-                return true;
         }
-        return false;
+        ll ans = 0;
+    
+        int rleast = max(0, right);
+        int l = left;
+        _REP(r, n - 1, rleast)
+        {
+            l = min(l, r);
+            while (r < n - 1 && l > 0 && nums[l - 1] >= nums[r + 1])
+                --l;
+            ans += l + 1;
+        }
+        return ans;
     }
 };
