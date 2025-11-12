@@ -25,7 +25,7 @@ void primes(vector<bool> &mark)
 {
     for (int x = 2; x < mark.size(); ++x)
     {
-        if (mark[x]) continue;
+        if (!mark[x]) continue;
         // 性质：小于x**2的x的倍数在扫描更小的数时已经被标记过了
         for (int y = x * x; y < mark.size(); y += x)
         {

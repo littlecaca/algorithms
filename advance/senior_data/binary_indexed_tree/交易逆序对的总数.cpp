@@ -83,7 +83,7 @@ class Solution {
 public:
     int reversePairs(vector<int>& record) {
         // 既可以使用树状数组，也可以使用归并排序
-        // 本题数据范围未知，使用树状数组的化要进行离散化。
+        // 本题数据范围未知，使用树状数组的话要进行离散化。
         // 也就是将元素地实际值映射为其相对位置值（即排名）。
         int n = record.size();
         vi temp = record;
